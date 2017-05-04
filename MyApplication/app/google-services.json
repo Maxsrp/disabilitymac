@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "937513539197",
+    "firebase_url": "https://disabilitymac-a9ccc.firebaseio.com",
+    "project_id": "disabilitymac-a9ccc",
+    "storage_bucket": "disabilitymac-a9ccc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:937513539197:android:bbb19295dd3346a4",
+        "android_client_info": {
+          "package_name": "com.marktrs.macapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "937513539197-nvr2cf9h8b27116j3fl2sqh4jbvuk65k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDetsDAdWdFZUdrk8vKTOVXKRCaKvAH1uc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
