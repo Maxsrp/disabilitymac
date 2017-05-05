@@ -81,15 +81,23 @@
             </android.support.design.widget.TextInputLayout>
 
             <Button
-                android:id="@+id/email_sign_in_button"
+                android:id="@+id/email_sign_up_button"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Sign up"
                 android:textAlignment="textEnd"
-                android:textColor="@color/common_google_signin_btn_text_light_focused" />
+                android:textColor="@color/common_google_signin_btn_text_light_focused"
+                android:onClick="onCompletSignUp"/>
 
+            <TextView
+                android:id="@+id/status"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:layout_marginBottom="15dp"/>
         </LinearLayout>
+
     </ScrollView>
+
 </LinearLayout>

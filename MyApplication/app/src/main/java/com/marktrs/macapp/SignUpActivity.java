@@ -3,6 +3,7 @@ package com.marktrs.macapp;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -18,6 +19,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -72,11 +74,17 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private TextView mStatusTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
+        mAuth = FirebaseAuth.getInstance();
+
+        mStatusTextView = (TextView) findViewById(R.id.status);
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -92,15 +100,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
                 return false;
             }
         });
-
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
-
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
@@ -146,7 +145,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
             }
         }
     }
-
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -290,22 +288,21 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
     }
 
     public void onCompletSignUp(View view){
-
+        createAccount(mEmailView.getText().toString(), mPasswordView.getText().toString());
     }
 
     private void createAccount(String email, String password) {
         Log.d(TAG, "createAccount:" + email);
         if (!validateForm()) {
+            Log.d(TAG, "Not validate form");
             return;
         }
 
         // [START create_user_with_email]
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
@@ -327,20 +324,20 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
     private boolean validateForm() {
         boolean valid = true;
 
-        String email = mEmailField.getText().toString();
+        String email = mEmailView.getText().toString();
         if (TextUtils.isEmpty(email)) {
-            mEmailField.setError("Required.");
+            mEmailView.setError("Required.");
             valid = false;
         } else {
-            mEmailField.setError(null);
+            mEmailView.setError(null);
         }
 
-        String password = mPasswordField.getText().toString();
+        String password = mPasswordView.getText().toString();
         if (TextUtils.isEmpty(password)) {
-            mPasswordField.setError("Required.");
+            mPasswordView.setError("Required.");
             valid = false;
         } else {
-            mPasswordField.setError(null);
+            mPasswordView.setError(null);
         }
 
         return valid;
@@ -348,22 +345,11 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
 
     private void updateUI(FirebaseUser user) {
         if (user != null) {
-            mStatusTextView.setText(getString(R.string.emailpassword_status_fmt,
-                    user.getEmail(), user.isEmailVerified()));
-            mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
-
-            findViewById(R.id.email_password_buttons).setVisibility(View.GONE);
-            findViewById(R.id.email_password_fields).setVisibility(View.GONE);
-            findViewById(R.id.signed_in_buttons).setVisibility(View.VISIBLE);
-
-            findViewById(R.id.verify_email_button).setEnabled(!user.isEmailVerified());
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
         } else {
-            mStatusTextView.setText(R.string.signed_out);
-            mDetailTextView.setText(null);
-
-            findViewById(R.id.email_password_buttons).setVisibility(View.VISIBLE);
-            findViewById(R.id.email_password_fields).setVisibility(View.VISIBLE);
-            findViewById(R.id.signed_in_buttons).setVisibility(View.GONE);
+            mStatusTextView.setText("Failed sign up");
         }
     }
 
