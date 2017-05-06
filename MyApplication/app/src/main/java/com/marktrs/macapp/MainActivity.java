@@ -1,9 +1,15 @@
 package com.marktrs.macapp;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -14,7 +20,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,6 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.marktrs.macapp.Fragment.ProfileSetUpFragment;
 import com.marktrs.macapp.Model.User;
 
 import java.util.ArrayList;
@@ -38,11 +44,19 @@ public class MainActivity extends AppCompatActivity
     private DatabaseReference userRef;
     private ArrayList<User> userList;
 
+    private View mProgressView;
+    private View mMainFragmentView;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        mMainFragmentView = findViewById(R.id.fragment_area);
+        mProgressView = findViewById(R.id.main_progress);
+
+        showProgress(true);
 
         // Initialize Firebase Auth
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -84,7 +98,7 @@ public class MainActivity extends AppCompatActivity
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot userSnapshot: dataSnapshot.getChildren()){
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     User user = userSnapshot.getValue(User.class);
                     user.setuID(userSnapshot.getKey());
                     Log.d(TAG, "FirstName = " + user.getFirstName());
@@ -93,17 +107,15 @@ public class MainActivity extends AppCompatActivity
                 }
                 Log.d(TAG, "UserList Size" + userList.size());
                 ArrayList<String> uIDs = new ArrayList<String>();
-                for (User item:userList){
+                for (User item : userList) {
                     uIDs.add(item.getuID());
                 }
-                if(uIDs.contains(mFirebaseUser.getUid())){
+                if (uIDs.contains(mFirebaseUser.getUid())) {
                     //TODO: show all jobs
-                    Log.d(TAG,"Uid is match with " +  mFirebaseUser.getUid());
-                    Toast.makeText(MainActivity.this, "Uid is match", Toast.LENGTH_LONG).show();
-                }else {
+                    UpdateUI(false);
+                } else {
                     //TODO: Bring user to create profile
-                    Log.d(TAG,"Can't find this UID ->" +  mFirebaseUser.getUid());
-                    Toast.makeText(MainActivity.this, "Can't find your UID", Toast.LENGTH_LONG).show();
+                    UpdateUI(true);
                 }
             }
 
@@ -112,6 +124,12 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
     }
 
     @Override
@@ -171,5 +189,57 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void UpdateUI(Boolean goProfile) {
+        if (goProfile) {
+            User user = new User();
+            user.setuID(mFirebaseUser.getUid());
+            ProfileSetUpFragment profileSetUpFragment = new ProfileSetUpFragment().newInstance(user);
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.replace(R.id.fragment_area, profileSetUpFragment);
+            transaction.commit();
+            showProgress(false);
+        } else {
+            showProgress(false);
+        }
+    }
+
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            mMainFragmentView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mMainFragmentView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mMainFragmentView.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mMainFragmentView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
     }
 }

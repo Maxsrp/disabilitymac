@@ -307,12 +307,14 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            Toast.makeText(SignUpActivity.this, "SignUp successful.",
+                                    Toast.LENGTH_SHORT).show();
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(SignUpActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignUpActivity.this, "SignUp failed.",
+                                    Toast.LENGTH_LONG).show();
                             updateUI(null);
                         }
 

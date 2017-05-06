@@ -332,13 +332,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
-
-                        // [START_EXCLUDE]
-                        if (!task.isSuccessful()) {
-                            Toast.makeText(LoginActivity.this, "Task unsuccessful",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                        // [END_EXCLUDE]
                     }
                 });
         // [END sign_in_with_email]
