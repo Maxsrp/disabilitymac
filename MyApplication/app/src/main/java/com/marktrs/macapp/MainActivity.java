@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,6 +23,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.marktrs.macapp.Model.User;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -32,6 +36,7 @@ public class MainActivity extends AppCompatActivity
     private FirebaseDatabase database;
 
     private DatabaseReference userRef;
+    private ArrayList<User> userList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,26 +76,42 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        database = FirebaseDatabase.getInstance();
-        userRef = database.getReference("user");
-        DatabaseReference myRef = database.getReference("message");
+        userList = new ArrayList<>();
 
-        myRef.addValueEventListener(new ValueEventListener() {
+        database = FirebaseDatabase.getInstance();
+        userRef = database.getReference("User");
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                String value = dataSnapshot.getValue(String.class);
-                Log.d(TAG, "Value is: " + value);
+                for (DataSnapshot userSnapshot: dataSnapshot.getChildren()){
+                    User user = userSnapshot.getValue(User.class);
+                    user.setuID(userSnapshot.getKey());
+                    Log.d(TAG, "FirstName = " + user.getFirstName());
+                    Log.d(TAG, "UID = " + user.getuID());
+                    userList.add(user);
+                }
+                Log.d(TAG, "UserList Size" + userList.size());
+                ArrayList<String> uIDs = new ArrayList<String>();
+                for (User item:userList){
+                    uIDs.add(item.getuID());
+                }
+                if(uIDs.contains(mFirebaseUser.getUid())){
+                    //TODO: show all jobs
+                    Log.d(TAG,"Uid is match with " +  mFirebaseUser.getUid());
+                    Toast.makeText(MainActivity.this, "Uid is match", Toast.LENGTH_LONG).show();
+                }else {
+                    //TODO: Bring user to create profile
+                    Log.d(TAG,"Can't find this UID ->" +  mFirebaseUser.getUid());
+                    Toast.makeText(MainActivity.this, "Can't find your UID", Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
-
     }
 
     @Override
