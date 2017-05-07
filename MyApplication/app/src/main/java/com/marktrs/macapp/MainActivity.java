@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -20,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,6 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.marktrs.macapp.Fragment.ProfileSetUpFragment;
+import com.marktrs.macapp.Fragment.Recruiter.PostedJobFragment;
 import com.marktrs.macapp.Model.User;
 
 import java.util.ArrayList;
@@ -42,6 +45,7 @@ public class MainActivity extends AppCompatActivity
     private FirebaseDatabase database;
 
     private DatabaseReference userRef;
+    private ValueEventListener getUserProfile;
     private ArrayList<User> userList;
 
     private View mProgressView;
@@ -90,32 +94,24 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        userList = new ArrayList<>();
+        //userList = new ArrayList<>();
 
         database = FirebaseDatabase.getInstance();
-        userRef = database.getReference("User");
+        userRef = database.getReference("User").child(mFirebaseUser.getUid());
 
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        getUserProfile = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    User user = userSnapshot.getValue(User.class);
-                    user.setuID(userSnapshot.getKey());
-                    Log.d(TAG, "FirstName = " + user.getFirstName());
-                    Log.d(TAG, "UID = " + user.getuID());
-                    userList.add(user);
-                }
-                Log.d(TAG, "UserList Size" + userList.size());
-                ArrayList<String> uIDs = new ArrayList<String>();
-                for (User item : userList) {
-                    uIDs.add(item.getuID());
-                }
-                if (uIDs.contains(mFirebaseUser.getUid())) {
-                    //TODO: show all jobs
-                    UpdateUI(false);
+
+                if (dataSnapshot.getChildrenCount() > 0) {
+                    User user = dataSnapshot.getValue(User.class);
+                    if (user.getRecruiter() != null) {
+                        UpdateUI("postedJob");
+                    } else {
+                        UpdateUI("jobList");
+                    }
                 } else {
-                    //TODO: Bring user to create profile
-                    UpdateUI(true);
+                    UpdateUI("setupProfile");
                 }
             }
 
@@ -123,7 +119,9 @@ public class MainActivity extends AppCompatActivity
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        };
+
+        userRef.addListenerForSingleValueEvent(getUserProfile);
     }
 
     @Override
@@ -191,8 +189,8 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void UpdateUI(Boolean goProfile) {
-        if (goProfile) {
+    public void UpdateUI(String route) {
+        if (route.equals("setupProfile")) {
             User user = new User();
             user.setuID(mFirebaseUser.getUid());
             ProfileSetUpFragment profileSetUpFragment = new ProfileSetUpFragment().newInstance(user);
@@ -200,10 +198,18 @@ public class MainActivity extends AppCompatActivity
             FragmentTransaction transaction = manager.beginTransaction();
             transaction.replace(R.id.fragment_area, profileSetUpFragment);
             transaction.commit();
-            showProgress(false);
-        } else {
-            showProgress(false);
+        } else if (route.equals("postedJob")) {
+            PostedJobFragment postedJobFragment = new PostedJobFragment();
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.replace(R.id.fragment_area, postedJobFragment);
+            transaction.commit();
+        } else if (route.equals("jobList")) {
+            Toast.makeText(MainActivity.this, "currently not available.",
+                    Toast.LENGTH_SHORT).show();
         }
+        userRef.removeEventListener(getUserProfile);
+        showProgress(false);
     }
 
     /**

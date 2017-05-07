@@ -82,9 +82,19 @@ public class ProfileSetUpFragment extends Fragment {
         recruiterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "This task is underconstruction", Toast.LENGTH_LONG).show();
+                onPressRecruiter();
             }
         });
+    }
+
+    public void onPressRecruiter() {
+        addUser(firstName.getText().toString(), lastName.getText().toString());
+        RecruiterSetUpFragment recruiterSetUpFragment = new RecruiterSetUpFragment().newInstance(this.user);
+        FragmentManager manager = getFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.replace(R.id.fragment_area, recruiterSetUpFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     public void onPressWorker() {

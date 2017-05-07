@@ -5,4 +5,62 @@ package com.marktrs.macapp.Model;
  */
 
 public class Job {
+
+    private String jobName;
+    private String symptomType;
+    private String requiredEducation;
+    private String requiredSkill;
+    private String workplace;
+    private String payment;
+
+    public Job() {
+    }
+
+    public String getJobName() {
+        return jobName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
+    }
+
+    public String getSymptomType() {
+        return symptomType;
+    }
+
+    public void setSymptomType(String symptomType) {
+        this.symptomType = symptomType;
+    }
+
+    public String getRequiredEducation() {
+        return requiredEducation;
+    }
+
+    public void setRequiredEducation(String requiredEducation) {
+        this.requiredEducation = requiredEducation;
+    }
+
+    public String getRequiredSkill() {
+        return requiredSkill;
+    }
+
+    public void setRequiredSkill(String requiredSkill) {
+        this.requiredSkill = requiredSkill;
+    }
+
+    public String getWorkplace() {
+        return workplace;
+    }
+
+    public void setWorkplace(String workplace) {
+        this.workplace = workplace;
+    }
+
+    public String getPayment() {
+        return payment;
+    }
+
+    public void setPayment(String payment) {
+        this.payment = payment;
+    }
 }
