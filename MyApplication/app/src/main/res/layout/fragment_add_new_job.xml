@@ -1,0 +1,74 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.marktrs.macapp.Fragment.Recruiter.AddNewJobFragment"
+    android:orientation="vertical"
+    android:padding="15dp">
+
+    <!--private String jobName;-->
+    <!--private String symptomType;-->
+    <!--private String requiredEducation;-->
+    <!--private String requiredSkill;-->
+    <!--private String workplace;-->
+    <!--private String payment;-->
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="Please add job detail"
+        android:textAlignment="center" />
+
+    <EditText
+        android:id="@+id/job_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:hint="Job name" />
+
+    <EditText
+        android:id="@+id/job_symptoms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:hint="Type of symptoms" />
+
+    <EditText
+        android:id="@+id/job_education"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:hint="Required education" />
+
+    <EditText
+        android:id="@+id/job_skill"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:hint="Required skill" />
+
+    <EditText
+        android:id="@+id/job_workplace"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:hint="Workplace" />
+
+    <EditText
+        android:id="@+id/job_payment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:hint="Payment" />
+
+    <Button
+        android:id="@+id/job_submit_button"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:text="confirm"
+        android:textColor="@color/common_google_signin_btn_text_light_default" />
+
+</LinearLayout>

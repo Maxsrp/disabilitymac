@@ -16,6 +16,15 @@ public class Job {
     public Job() {
     }
 
+    public Job(String jobName, String symptomType, String requiredEducation, String requiredSkill, String workplace, String payment) {
+        this.jobName = jobName;
+        this.symptomType = symptomType;
+        this.requiredEducation = requiredEducation;
+        this.requiredSkill = requiredSkill;
+        this.workplace = workplace;
+        this.payment = payment;
+    }
+
     public String getJobName() {
         return jobName;
     }

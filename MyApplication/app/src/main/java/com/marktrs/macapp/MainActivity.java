@@ -4,13 +4,13 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -21,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,13 +32,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.marktrs.macapp.Fragment.ProfileSetUpFragment;
+import com.marktrs.macapp.Fragment.Recruiter.AddNewJobFragment;
 import com.marktrs.macapp.Fragment.Recruiter.PostedJobFragment;
+import com.marktrs.macapp.Fragment.Recruiter.dummy.DummyContent;
 import com.marktrs.macapp.Model.User;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, PostedJobFragment.OnListFragmentInteractionListener {
 
     private static final String TAG = "MainActivity";
     private FirebaseAuth mFirebaseAuth;
@@ -50,6 +53,8 @@ public class MainActivity extends AppCompatActivity
 
     private View mProgressView;
     private View mMainFragmentView;
+
+    private ImageButton fab;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -204,6 +209,23 @@ public class MainActivity extends AppCompatActivity
             FragmentTransaction transaction = manager.beginTransaction();
             transaction.replace(R.id.fragment_area, postedJobFragment);
             transaction.commit();
+            fab = (ImageButton) findViewById(R.id.fab);
+            fab.setImageResource(R.drawable.ic_action_add);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(MainActivity.this, "Adding new job",
+                            Toast.LENGTH_SHORT).show();
+                    AddNewJobFragment addNewJobFragment = new AddNewJobFragment();
+                    FragmentManager manager = getSupportFragmentManager();
+                    FragmentTransaction transaction = manager.beginTransaction();
+                    transaction.replace(R.id.fragment_area, addNewJobFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                    fab.setVisibility(View.INVISIBLE);
+                }
+            });
+
         } else if (route.equals("jobList")) {
             Toast.makeText(MainActivity.this, "currently not available.",
                     Toast.LENGTH_SHORT).show();
@@ -247,5 +269,12 @@ public class MainActivity extends AppCompatActivity
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mMainFragmentView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+        Log.d(TAG, "onListFragmentInteraction");
+        Toast.makeText(MainActivity.this, "onListFragmentInteraction" + item,
+                Toast.LENGTH_SHORT).show();
     }
 }

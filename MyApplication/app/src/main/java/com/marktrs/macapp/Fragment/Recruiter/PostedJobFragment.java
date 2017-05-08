@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.marktrs.macapp.Model.Job;
 import com.marktrs.macapp.R;
 import com.marktrs.macapp.Fragment.Recruiter.dummy.DummyContent;
 import com.marktrs.macapp.Fragment.Recruiter.dummy.DummyContent.DummyItem;
@@ -27,7 +28,7 @@ public class PostedJobFragment extends Fragment {
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
-    private int mColumnCount = 1;
+    private int mColumnCount = 2;
     private OnListFragmentInteractionListener mListener;
 
     /**
@@ -70,6 +71,7 @@ public class PostedJobFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
+            //TODO: Add posted job here
             recyclerView.setAdapter(new MyPostedJobRecyclerViewAdapter(DummyContent.ITEMS, mListener));
         }
         return view;
@@ -92,6 +94,8 @@ public class PostedJobFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
+
 
     /**
      * This interface must be implemented by activities that contain this
