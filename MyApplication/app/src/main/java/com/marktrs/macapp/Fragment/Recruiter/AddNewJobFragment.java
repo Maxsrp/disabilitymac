@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.marktrs.macapp.Fragment.WorkerSetUpFragment;
@@ -36,6 +38,8 @@ public class AddNewJobFragment extends Fragment {
     public Job job;
 
     private DatabaseReference mDatabase;
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseUser mFirebaseUser;
 
     public AddNewJobFragment() {
         // Required empty public constructor
@@ -47,6 +51,8 @@ public class AddNewJobFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
         return inflater.inflate(R.layout.fragment_add_new_job, container, false);
     }
 
@@ -54,7 +60,7 @@ public class AddNewJobFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         jobNameET = (EditText) view.findViewById(R.id.job_name);
-        symptomTypeET = (EditText) view.findViewById(R.id.job_symptoms);
+        symptomTypeET = (EditText) view.findViewById(R.id .job_symptoms);
         requiredEducationET = (EditText) view.findViewById(R.id.job_education);
         requiredSkillET = (EditText) view.findViewById(R.id.job_skill);
         workplaceET = (EditText) view.findViewById(R.id.job_workplace);
@@ -65,11 +71,11 @@ public class AddNewJobFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 addJobToFirebase();
-//                PostedJobFragment postedJobFragment = new PostedJobFragment();
+                PostedJobFragment postedJobFragment = new PostedJobFragment();
                 FragmentManager manager = getFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.remove(AddNewJobFragment.this);
-//                transaction.replace(R.id.fragment_area, postedJobFragment);
+                transaction.replace(R.id.fragment_area, postedJobFragment);
                 transaction.commit();
                 Toast.makeText(getContext(), "Successful !",
                         Toast.LENGTH_SHORT).show();
@@ -84,7 +90,9 @@ public class AddNewJobFragment extends Fragment {
                 , requiredEducationET.getText().toString()
                 , requiredSkillET.getText().toString()
                 , workplaceET.getText().toString()
-                , paymentET.getText().toString());
+                , paymentET.getText().toString()
+                , mFirebaseUser.getUid()
+                );
 
         mDatabase.child("Jobs").push().setValue(this.job);
     }

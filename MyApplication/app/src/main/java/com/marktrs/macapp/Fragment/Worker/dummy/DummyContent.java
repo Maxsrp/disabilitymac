@@ -1,4 +1,4 @@
-package com.marktrs.macapp.Fragment.Recruiter.dummy;
+package com.marktrs.macapp.Fragment.Worker.dummy;
 
 import java.util.ArrayList;
 import java.util.HashMap;

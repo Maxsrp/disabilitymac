@@ -34,13 +34,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.marktrs.macapp.Fragment.ProfileSetUpFragment;
 import com.marktrs.macapp.Fragment.Recruiter.AddNewJobFragment;
 import com.marktrs.macapp.Fragment.Recruiter.PostedJobFragment;
-import com.marktrs.macapp.Fragment.Recruiter.dummy.DummyContent;
+import com.marktrs.macapp.Fragment.Worker.AllJobFragment;
+import com.marktrs.macapp.Fragment.Worker.dummy.DummyContent;
 import com.marktrs.macapp.Model.User;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, PostedJobFragment.OnListFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, AllJobFragment.OnListFragmentInteractionListener {
 
     private static final String TAG = "MainActivity";
     private FirebaseAuth mFirebaseAuth;
@@ -195,20 +196,22 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void UpdateUI(String route) {
+
+
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+
         if (route.equals("setupProfile")) {
             User user = new User();
             user.setuID(mFirebaseUser.getUid());
+
             ProfileSetUpFragment profileSetUpFragment = new ProfileSetUpFragment().newInstance(user);
-            FragmentManager manager = getSupportFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
             transaction.replace(R.id.fragment_area, profileSetUpFragment);
-            transaction.commit();
+
         } else if (route.equals("postedJob")) {
             PostedJobFragment postedJobFragment = new PostedJobFragment();
-            FragmentManager manager = getSupportFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
             transaction.replace(R.id.fragment_area, postedJobFragment);
-            transaction.commit();
+
             fab = (ImageButton) findViewById(R.id.fab);
             fab.setImageResource(R.drawable.ic_action_add);
             fab.setOnClickListener(new View.OnClickListener() {
@@ -227,9 +230,10 @@ public class MainActivity extends AppCompatActivity
             });
 
         } else if (route.equals("jobList")) {
-            Toast.makeText(MainActivity.this, "currently not available.",
-                    Toast.LENGTH_SHORT).show();
+            AllJobFragment allJobFragment = new AllJobFragment();
+            transaction.replace(R.id.fragment_area, allJobFragment);
         }
+        transaction.commit();
         userRef.removeEventListener(getUserProfile);
         showProgress(false);
     }
@@ -271,10 +275,9 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
     @Override
     public void onListFragmentInteraction(DummyContent.DummyItem item) {
-        Log.d(TAG, "onListFragmentInteraction");
-        Toast.makeText(MainActivity.this, "onListFragmentInteraction" + item,
-                Toast.LENGTH_SHORT).show();
+
     }
 }

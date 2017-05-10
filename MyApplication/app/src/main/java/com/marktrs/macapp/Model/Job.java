@@ -12,17 +12,19 @@ public class Job {
     private String requiredSkill;
     private String workplace;
     private String payment;
+    private String ownerUID;
 
     public Job() {
     }
 
-    public Job(String jobName, String symptomType, String requiredEducation, String requiredSkill, String workplace, String payment) {
+    public Job(String jobName, String symptomType, String requiredEducation, String requiredSkill, String workplace, String payment, String ownerUID) {
         this.jobName = jobName;
         this.symptomType = symptomType;
         this.requiredEducation = requiredEducation;
         this.requiredSkill = requiredSkill;
         this.workplace = workplace;
         this.payment = payment;
+        this.ownerUID = ownerUID;
     }
 
     public String getJobName() {
@@ -71,5 +73,13 @@ public class Job {
 
     public void setPayment(String payment) {
         this.payment = payment;
+    }
+
+    public String getOwnerUID() {
+        return ownerUID;
+    }
+
+    public void setOwnerUID(String ownerUID) {
+        this.ownerUID = ownerUID;
     }
 }

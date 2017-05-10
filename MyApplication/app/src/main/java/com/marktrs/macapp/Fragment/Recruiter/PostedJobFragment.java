@@ -6,16 +6,22 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.marktrs.macapp.Model.Job;
 import com.marktrs.macapp.R;
-import com.marktrs.macapp.Fragment.Recruiter.dummy.DummyContent;
-import com.marktrs.macapp.Fragment.Recruiter.dummy.DummyContent.DummyItem;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * A fragment representing a list of Items.
@@ -29,7 +35,17 @@ public class PostedJobFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 2;
-    private OnListFragmentInteractionListener mListener;
+
+    private FirebaseDatabase database;
+    private DatabaseReference jobsRef;
+    private ValueEventListener getAllJobListener;
+
+    private ArrayList<Job> jobs;
+
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseUser mFirebaseUser;
+
+    private  RecyclerView recyclerView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -52,6 +68,10 @@ public class PostedJobFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        database = FirebaseDatabase.getInstance();
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
+
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
@@ -65,14 +85,43 @@ public class PostedJobFragment extends Fragment {
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             //TODO: Add posted job here
-            recyclerView.setAdapter(new MyPostedJobRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            jobs = new ArrayList<>();
+            jobsRef = database.getReference("Jobs");
+            mFirebaseUser = mFirebaseAuth.getCurrentUser();
+
+            getAllJobListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot dtSnapshot : dataSnapshot.getChildren()) {
+                        Job job = dtSnapshot.getValue(Job.class);
+                        if (job.getOwnerUID().equals(mFirebaseUser.getUid())) {
+                            Log.d("Jobs", job.getJobName());
+                            jobs.add(job);
+                        }
+                    }
+                    if(jobs.isEmpty()){
+                        //TODO: show text 'You haven't posted any job'
+                        Log.d("Jobs", "Empty List");
+                    }else {
+                        recyclerView.setAdapter(new MyPostedJobRecyclerViewAdapter(jobs));
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            jobsRef.addValueEventListener(getAllJobListener);
+
+
         }
         return view;
     }
@@ -81,34 +130,12 @@ public class PostedJobFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        jobsRef.removeEventListener(getAllJobListener);
     }
 
-
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
-    }
 }
