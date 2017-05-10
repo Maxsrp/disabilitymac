@@ -1,10 +1,12 @@
 package com.marktrs.macapp.Model;
 
+import java.io.Serializable;
+
 /**
  * Created by Mark on 5/5/2017.
  */
 
-public class Job {
+public class Job implements Serializable {
 
     private String jobName;
     private String symptomType;

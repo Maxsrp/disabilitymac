@@ -6,25 +6,14 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.marktrs.macapp.Fragment.Recruiter.MyPostedJobRecyclerViewAdapter;
-import com.marktrs.macapp.Model.Job;
 import com.marktrs.macapp.R;
 import com.marktrs.macapp.Fragment.Worker.dummy.DummyContent;
 import com.marktrs.macapp.Fragment.Worker.dummy.DummyContent.DummyItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,7 +22,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class AllJobFragment extends Fragment {
+public class JobHistoryFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -45,23 +34,13 @@ public class AllJobFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-
-    private ArrayList<Job> jobs;
-    private FirebaseDatabase database;
-    private DatabaseReference jobsRef;
-    private FirebaseAuth mFirebaseAuth;
-    private FirebaseUser mFirebaseUser;
-
-    private ValueEventListener getAllJobListener;
-    private  RecyclerView recyclerView;
-
-    public AllJobFragment() {
+    public JobHistoryFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static AllJobFragment newInstance(int columnCount) {
-        AllJobFragment fragment = new AllJobFragment();
+    public static JobHistoryFragment newInstance(int columnCount) {
+        JobHistoryFragment fragment = new JobHistoryFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -72,12 +51,6 @@ public class AllJobFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        database = FirebaseDatabase.getInstance();
-
-        //TODO: show job matched symptoms only
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseUser = mFirebaseAuth.getCurrentUser();
-
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
@@ -86,42 +59,18 @@ public class AllJobFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_alljob_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_jobhistory_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            recyclerView = (RecyclerView) view;
+            RecyclerView recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-
-            jobs = new ArrayList<>();
-            jobsRef = database.getReference("Jobs");
-            mFirebaseUser = mFirebaseAuth.getCurrentUser();
-
-            getAllJobListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot dtSnapshot : dataSnapshot.getChildren()) {
-                        jobs.add(dtSnapshot.getValue(Job.class));
-                    }
-                    if(jobs.isEmpty()){
-                        //TODO: show text 'No available job to show now'
-                        Log.d("Jobs", "Empty List");
-                    }else {
-                        recyclerView.setAdapter(new MyAllJobRecyclerViewAdapter(jobs, mListener));
-                    }
-                }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            };
-            jobsRef.addValueEventListener(getAllJobListener);
-
+            recyclerView.setAdapter(new MyJobHistoryRecyclerViewAdapter(DummyContent.ITEMS, mListener));
         }
         return view;
     }
@@ -142,7 +91,6 @@ public class AllJobFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        jobsRef.removeEventListener(getAllJobListener);
     }
 
     /**
@@ -157,6 +105,6 @@ public class AllJobFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(Job job);
+        void onListFragmentInteraction(DummyItem item);
     }
 }

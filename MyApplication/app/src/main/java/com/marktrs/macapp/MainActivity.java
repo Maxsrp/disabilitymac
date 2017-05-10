@@ -35,13 +35,16 @@ import com.marktrs.macapp.Fragment.ProfileSetUpFragment;
 import com.marktrs.macapp.Fragment.Recruiter.AddNewJobFragment;
 import com.marktrs.macapp.Fragment.Recruiter.PostedJobFragment;
 import com.marktrs.macapp.Fragment.Worker.AllJobFragment;
+import com.marktrs.macapp.Fragment.Worker.JobAnnouncement;
+import com.marktrs.macapp.Fragment.Worker.JobHistoryFragment;
 import com.marktrs.macapp.Fragment.Worker.dummy.DummyContent;
+import com.marktrs.macapp.Model.Job;
 import com.marktrs.macapp.Model.User;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, AllJobFragment.OnListFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, AllJobFragment.OnListFragmentInteractionListener, JobHistoryFragment.OnListFragmentInteractionListener {
 
     private static final String TAG = "MainActivity";
     private FirebaseAuth mFirebaseAuth;
@@ -223,7 +226,6 @@ public class MainActivity extends AppCompatActivity
                     FragmentManager manager = getSupportFragmentManager();
                     FragmentTransaction transaction = manager.beginTransaction();
                     transaction.replace(R.id.fragment_area, addNewJobFragment);
-                    transaction.addToBackStack(null);
                     transaction.commit();
                     fab.setVisibility(View.INVISIBLE);
                 }
@@ -277,7 +279,18 @@ public class MainActivity extends AppCompatActivity
 
 
     @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+    public void onListFragmentInteraction(Job job) {
+        JobAnnouncement jobAnnouncement = new JobAnnouncement().newInstance(job);
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.replace(R.id.fragment_area, jobAnnouncement);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
 
+    @Override
+    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+        Toast.makeText(MainActivity.this, "Item " + item.content + " click",
+                Toast.LENGTH_SHORT).show();
     }
 }
