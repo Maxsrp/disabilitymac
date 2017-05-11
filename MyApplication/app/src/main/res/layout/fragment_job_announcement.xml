@@ -1,14 +1,96 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pet_list_card_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.marktrs.macapp.Fragment.Worker.JobAnnouncement">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    android:layout_height="wrap_content"
+    card_view:cardCornerRadius="4dp"
+    card_view:cardElevation="2dp"
+    android:layout_margin="25dp">
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/job_text"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_marginTop="130dp"
+            android:layout_marginLeft="15dp"
+            android:textSize="20dp"
+            android:text="Job name"
+            android:id="@+id/job_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAllCaps="true" />
 
-</FrameLayout>
+        <TextView
+            android:layout_marginTop="140dp"
+            android:textAlignment="textEnd"
+            android:layout_marginRight="15dp"
+            android:text="Job location"
+            android:id="@+id/job_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp"/>
+
+        <View
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="160dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorAccent"
+            android:id="@+id/divider"/>
+
+        <TextView
+            android:layout_margin="16dp"
+            android:text="Symptoms"
+            android:textColor="@color/colorAccent"
+            android:id="@+id/job_symptoms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:layout_below="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:text="education"
+                android:id="@+id/job_education"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="16dp"/>
+
+            <TextView
+                android:text="skill"
+                android:id="@+id/job_skill"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="16dp"/>
+
+            <TextView
+                android:text="payment"
+                android:id="@+id/job_payment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="16dp"/>
+
+
+            <View
+                android:layout_marginBottom="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorAccent"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/apply_job"
+                android:text="Apply this job"
+                android:background="@color/colorAccent"
+                android:textColor="#FAFAFA"/>
+
+        </LinearLayout>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

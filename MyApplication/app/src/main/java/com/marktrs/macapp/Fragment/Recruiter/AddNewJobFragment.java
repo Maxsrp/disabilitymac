@@ -94,6 +94,8 @@ public class AddNewJobFragment extends Fragment {
                 , mFirebaseUser.getUid()
                 );
 
-        mDatabase.child("Jobs").push().setValue(this.job);
+        String key = mDatabase.child("Jobs").push().getKey();
+        mDatabase.child("Jobs").child(key).setValue(this.job);
+        mDatabase.child("Jobs").child(key).child("jobKey").setValue(key);
     }
 }

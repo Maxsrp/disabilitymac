@@ -226,6 +226,7 @@ public class MainActivity extends AppCompatActivity
                     FragmentManager manager = getSupportFragmentManager();
                     FragmentTransaction transaction = manager.beginTransaction();
                     transaction.replace(R.id.fragment_area, addNewJobFragment);
+                    transaction.addToBackStack(null);
                     transaction.commit();
                     fab.setVisibility(View.INVISIBLE);
                 }
@@ -277,7 +278,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-
     @Override
     public void onListFragmentInteraction(Job job) {
         JobAnnouncement jobAnnouncement = new JobAnnouncement().newInstance(job);
@@ -293,4 +293,5 @@ public class MainActivity extends AppCompatActivity
         Toast.makeText(MainActivity.this, "Item " + item.content + " click",
                 Toast.LENGTH_SHORT).show();
     }
+
 }
