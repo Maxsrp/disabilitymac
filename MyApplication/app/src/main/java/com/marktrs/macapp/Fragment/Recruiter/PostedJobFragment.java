@@ -100,8 +100,6 @@ public class PostedJobFragment extends Fragment {
 
             mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
-
-
             getAllApplicationListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -155,7 +153,6 @@ public class PostedJobFragment extends Fragment {
         }
         return view;
     }
-
 
     @Override
     public void onAttach(Context context) {
