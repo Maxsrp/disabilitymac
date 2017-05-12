@@ -19,16 +19,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.marktrs.macapp.Model.Job;
+import com.marktrs.macapp.Model.JobApplication;
 import com.marktrs.macapp.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
- */
 public class PostedJobFragment extends Fragment {
 
     // TODO: Customize parameter argument names
@@ -38,14 +35,18 @@ public class PostedJobFragment extends Fragment {
 
     private FirebaseDatabase database;
     private DatabaseReference jobsRef;
+    private DatabaseReference jobApplicationRef;
+
     private ValueEventListener getAllJobListener;
+    private ValueEventListener getAllApplicationListener;
 
     private ArrayList<Job> jobs;
 
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
 
-    private  RecyclerView recyclerView;
+    private RecyclerView recyclerView;
+    private Map<String, Integer> jobApplicationCount;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -92,25 +93,30 @@ public class PostedJobFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             //TODO: Add posted job here
-            jobs = new ArrayList<>();
+
+
             jobsRef = database.getReference("Jobs");
+            jobApplicationRef = database.getReference("JobApplications");
+
             mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
-            getAllJobListener = new ValueEventListener() {
+
+
+            getAllApplicationListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot dtSnapshot : dataSnapshot.getChildren()) {
-                        Job job = dtSnapshot.getValue(Job.class);
-                        if (job.getOwnerUID().equals(mFirebaseUser.getUid())) {
-                            Log.d("Jobs", job.getJobName());
-                            jobs.add(job);
+                    jobApplicationCount = new HashMap<>();
+                    if (dataSnapshot.getChildrenCount() > 0) {
+                        for (DataSnapshot dtSnapshot : dataSnapshot.getChildren()) {
+                            JobApplication application = dtSnapshot.getValue(JobApplication.class);
+                            String id = application.getJobId();
+                            if (jobApplicationCount.containsKey(id)) {
+                                jobApplicationCount.put(id, jobApplicationCount.get(id) + 1);
+                            } else {
+                                jobApplicationCount.put(id, 1);
+                            }
                         }
-                    }
-                    if(jobs.isEmpty()){
-                        //TODO: show text 'You haven't posted any job'
-                        Log.d("Jobs", "Empty List");
-                    }else {
-                        recyclerView.setAdapter(new MyPostedJobRecyclerViewAdapter(jobs));
+                        jobsRef.addListenerForSingleValueEvent(getAllJobListener);
                     }
                 }
 
@@ -119,8 +125,32 @@ public class PostedJobFragment extends Fragment {
 
                 }
             };
-            jobsRef.addValueEventListener(getAllJobListener);
 
+            getAllJobListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    jobs = new ArrayList<>();
+                    for (DataSnapshot dtSnapshot : dataSnapshot.getChildren()) {
+                        Job job = dtSnapshot.getValue(Job.class);
+                        if (job.getOwnerUID().equals(mFirebaseUser.getUid())) {
+                            jobs.add(job);
+                        }
+                    }
+                    if (jobs.isEmpty()) {
+                        //TODO: show text 'You haven't posted any job'
+                        Log.d("Jobs", "Empty List");
+                    } else {
+                        recyclerView.setAdapter(new MyPostedJobRecyclerViewAdapter(jobs, jobApplicationCount));
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+
+            jobApplicationRef.addValueEventListener(getAllApplicationListener);
 
         }
         return view;

@@ -10,10 +10,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.marktrs.macapp.Model.JobApplication;
 import com.marktrs.macapp.R;
-import com.marktrs.macapp.Fragment.Worker.dummy.DummyContent;
-import com.marktrs.macapp.Fragment.Worker.dummy.DummyContent.DummyItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,20 +31,26 @@ import java.util.List;
  */
 public class JobHistoryFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
+
+    private int mColumnCount = 2;
     private OnListFragmentInteractionListener mListener;
+
+    private FirebaseDatabase database;
+    private DatabaseReference jobsRef;
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseUser mFirebaseUser;
+    private ArrayList<JobApplication> appliedJob;
+    private ValueEventListener getAppliedJobListener;
+    private RecyclerView recyclerView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public JobHistoryFragment() {
-    }
 
-    // TODO: Customize parameter initialization
+    }
     @SuppressWarnings("unused")
     public static JobHistoryFragment newInstance(int columnCount) {
         JobHistoryFragment fragment = new JobHistoryFragment();
@@ -51,6 +64,10 @@ public class JobHistoryFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        database = FirebaseDatabase.getInstance();
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
+
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
@@ -60,17 +77,39 @@ public class JobHistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_jobhistory_list, container, false);
-
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyJobHistoryRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+
+            appliedJob = new ArrayList<>();
+            jobsRef = database.getReference("JobApplications");
+            mFirebaseUser = mFirebaseAuth.getCurrentUser();
+
+            getAppliedJobListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        JobApplication application = snapshot.getValue(JobApplication.class);
+                        if (application.getWorkerId().equals(mFirebaseUser.getUid())){
+                            appliedJob.add(application);
+                        }
+                    }
+                    recyclerView.setAdapter(new MyJobHistoryRecyclerViewAdapter(appliedJob, mListener));
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+
+            jobsRef.addValueEventListener(getAppliedJobListener);
         }
         return view;
     }
@@ -91,6 +130,7 @@ public class JobHistoryFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        jobsRef.removeEventListener(getAppliedJobListener);
     }
 
     /**
@@ -104,7 +144,6 @@ public class JobHistoryFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentClick(JobApplication item);
     }
 }

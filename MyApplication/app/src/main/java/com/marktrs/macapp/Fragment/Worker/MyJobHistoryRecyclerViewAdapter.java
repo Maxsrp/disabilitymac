@@ -7,22 +7,18 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.marktrs.macapp.Fragment.Worker.JobHistoryFragment.OnListFragmentInteractionListener;
-import com.marktrs.macapp.Fragment.Worker.dummy.DummyContent.DummyItem;
+import com.marktrs.macapp.Model.Job;
+import com.marktrs.macapp.Model.JobApplication;
 import com.marktrs.macapp.R;
 
-import java.util.List;
+import java.util.ArrayList;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class MyJobHistoryRecyclerViewAdapter extends RecyclerView.Adapter<MyJobHistoryRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final ArrayList<JobApplication> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyJobHistoryRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public MyJobHistoryRecyclerViewAdapter(ArrayList<JobApplication> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -37,16 +33,16 @@ public class MyJobHistoryRecyclerViewAdapter extends RecyclerView.Adapter<MyJobH
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.jobName.setText(mValues.get(position).getJobName());
+        holder.jobLocation.setText(mValues.get(position).getJobLocation());
+        holder.applicationStatus.setText(mValues.get(position).getStatus());
+        holder.jobSymptom.setText(mValues.get(position).getJobSymptom());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onListFragmentClick(holder.mItem);
                 }
             }
         });
@@ -59,20 +55,19 @@ public class MyJobHistoryRecyclerViewAdapter extends RecyclerView.Adapter<MyJobH
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public DummyItem mItem;
+        public final TextView jobName;
+        public final TextView jobLocation;
+        public final TextView jobSymptom;
+        public final TextView applicationStatus;
+        public JobApplication mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
-        }
-
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            jobName = (TextView) view.findViewById(R.id.job_name);
+            jobLocation = (TextView) view.findViewById(R.id.job_location);
+            jobSymptom = (TextView) view.findViewById(R.id.job_symptom);
+            applicationStatus = (TextView) view.findViewById(R.id.application_status);
         }
     }
 }

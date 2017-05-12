@@ -40,8 +40,6 @@ public class ProfileSetUpFragment extends Fragment {
         // Required empty public constructor
     }
 
-
-    // TODO: Rename and change types and number of parameters
     public static ProfileSetUpFragment newInstance(User user) {
         ProfileSetUpFragment fragment = new ProfileSetUpFragment();
         Bundle bundle = new Bundle();

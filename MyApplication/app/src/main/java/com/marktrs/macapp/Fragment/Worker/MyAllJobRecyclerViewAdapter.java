@@ -8,21 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.marktrs.macapp.Fragment.Recruiter.AddNewJobFragment;
-import com.marktrs.macapp.Fragment.Worker.AllJobFragment.OnListFragmentInteractionListener;
-import com.marktrs.macapp.Fragment.Worker.dummy.DummyContent.DummyItem;
-import com.marktrs.macapp.Fragment.WorkerSetUpFragment;
 import com.marktrs.macapp.Model.Job;
 import com.marktrs.macapp.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class MyAllJobRecyclerViewAdapter extends RecyclerView.Adapter<MyAllJobRecyclerViewAdapter.ViewHolder> {
 
     private ArrayList<Job> jobs;
@@ -45,6 +36,7 @@ public class MyAllJobRecyclerViewAdapter extends RecyclerView.Adapter<MyAllJobRe
         holder.mItem = jobs.get(position);
         holder.mIdView.setText(jobs.get(position).getJobName());
         holder.mContentView.setText(jobs.get(position).getWorkplace());
+        holder.jobSymptom.setText(jobs.get(position).getSymptomType());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,6 +55,8 @@ public class MyAllJobRecyclerViewAdapter extends RecyclerView.Adapter<MyAllJobRe
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
+        public final TextView jobSymptom;
+
         public Job mItem;
 
         public ViewHolder(View view) {
@@ -70,6 +64,7 @@ public class MyAllJobRecyclerViewAdapter extends RecyclerView.Adapter<MyAllJobRe
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.id);
             mContentView = (TextView) view.findViewById(R.id.content);
+            jobSymptom = (TextView) view.findViewById(R.id.job_symptoms);
         }
 
         @Override

@@ -18,14 +18,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.marktrs.macapp.Fragment.Recruiter.MyPostedJobRecyclerViewAdapter;
 import com.marktrs.macapp.Model.Job;
 import com.marktrs.macapp.R;
-import com.marktrs.macapp.Fragment.Worker.dummy.DummyContent;
-import com.marktrs.macapp.Fragment.Worker.dummy.DummyContent.DummyItem;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -35,9 +31,7 @@ import java.util.List;
  */
 public class AllJobFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
 
@@ -58,7 +52,6 @@ public class AllJobFragment extends Fragment {
     public AllJobFragment() {
     }
 
-    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
     public static AllJobFragment newInstance(int columnCount) {
         AllJobFragment fragment = new AllJobFragment();
@@ -98,13 +91,14 @@ public class AllJobFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
 
-            jobs = new ArrayList<>();
             jobsRef = database.getReference("Jobs");
             mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
             getAllJobListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    jobs = new ArrayList<>();
+                    mListener = null;
                     for (DataSnapshot dtSnapshot : dataSnapshot.getChildren()) {
                         jobs.add(dtSnapshot.getValue(Job.class));
                     }
@@ -156,7 +150,6 @@ public class AllJobFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onListFragmentInteraction(Job job);
     }
 }

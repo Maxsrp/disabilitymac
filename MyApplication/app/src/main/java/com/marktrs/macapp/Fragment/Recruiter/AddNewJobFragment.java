@@ -35,8 +35,6 @@ public class AddNewJobFragment extends Fragment {
     private EditText workplaceET;
     private EditText paymentET;
 
-    public Job job;
-
     private DatabaseReference mDatabase;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
@@ -84,18 +82,18 @@ public class AddNewJobFragment extends Fragment {
     }
 
     public void addJobToFirebase() {
-        this.job = new Job(
-                jobNameET.getText().toString()
-                , symptomTypeET.getText().toString()
-                , requiredEducationET.getText().toString()
-                , requiredSkillET.getText().toString()
-                , workplaceET.getText().toString()
-                , paymentET.getText().toString()
-                , mFirebaseUser.getUid()
-                );
-
         String key = mDatabase.child("Jobs").push().getKey();
-        mDatabase.child("Jobs").child(key).setValue(this.job);
-        mDatabase.child("Jobs").child(key).child("jobKey").setValue(key);
+
+        Job job = new Job();
+        job.setJobId(key);
+        job.setJobName(jobNameET.getText().toString());
+        job.setSymptomType(symptomTypeET.getText().toString());
+        job.setRequiredEducation(requiredEducationET.getText().toString());
+        job.setRequiredSkill(requiredSkillET.getText().toString());
+        job.setWorkplace(workplaceET.getText().toString());
+        job.setPayment(paymentET.getText().toString());
+        job.setOwnerUID(mFirebaseUser.getUid());
+
+        mDatabase.child("Jobs").child(key).setValue(job);
     }
 }

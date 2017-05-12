@@ -10,8 +10,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.AppCompatButton;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -37,8 +35,8 @@ import com.marktrs.macapp.Fragment.Recruiter.PostedJobFragment;
 import com.marktrs.macapp.Fragment.Worker.AllJobFragment;
 import com.marktrs.macapp.Fragment.Worker.JobAnnouncement;
 import com.marktrs.macapp.Fragment.Worker.JobHistoryFragment;
-import com.marktrs.macapp.Fragment.Worker.dummy.DummyContent;
 import com.marktrs.macapp.Model.Job;
+import com.marktrs.macapp.Model.JobApplication;
 import com.marktrs.macapp.Model.User;
 
 import java.util.ArrayList;
@@ -229,6 +227,7 @@ public class MainActivity extends AppCompatActivity
                     transaction.addToBackStack(null);
                     transaction.commit();
                     fab.setVisibility(View.INVISIBLE);
+                    //TODO: show fab after finish added new job
                 }
             });
 
@@ -289,9 +288,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
-        Toast.makeText(MainActivity.this, "Item " + item.content + " click",
+    public void onListFragmentClick(JobApplication item) {
+        Toast.makeText(MainActivity.this, "Item " + item.getId() + " click",
                 Toast.LENGTH_SHORT).show();
+
+
     }
 
 }

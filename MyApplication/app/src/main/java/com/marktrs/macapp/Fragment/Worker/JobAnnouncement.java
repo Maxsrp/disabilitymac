@@ -13,11 +13,16 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.marktrs.macapp.Fragment.Recruiter.AddNewJobFragment;
 import com.marktrs.macapp.Fragment.Recruiter.PostedJobFragment;
 import com.marktrs.macapp.LoginActivity;
 import com.marktrs.macapp.MainActivity;
 import com.marktrs.macapp.Model.Job;
+import com.marktrs.macapp.Model.JobApplication;
 import com.marktrs.macapp.R;
 
 /**
@@ -38,6 +43,10 @@ public class JobAnnouncement extends Fragment {
 
     private Button apply_job_button;
 
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseUser mFirebaseUser;
+
     public static JobAnnouncement newInstance(Job job) {
 
         Bundle bundle = new Bundle();
@@ -46,17 +55,21 @@ public class JobAnnouncement extends Fragment {
         fragment.setArguments(bundle);
         return fragment;
     }
-    
+
     public JobAnnouncement() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         this.job = (Job) getArguments().getSerializable(JOB_KEY);
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
+
         return inflater.inflate(R.layout.fragment_job_announcement, container, false);
     }
 
@@ -91,13 +104,30 @@ public class JobAnnouncement extends Fragment {
     }
 
     private void applyJob() {
+        String key = mDatabase.child("JobApplications").push().getKey();
 
+        JobApplication jobApplication = new JobApplication();
+        jobApplication.setId(key);
+        jobApplication.setJobId(job.getJobId());
+        jobApplication.setOwnerId(job.getOwnerUID());
+        jobApplication.setWorkerId(mFirebaseUser.getUid());
+        jobApplication.setStatus("waiting");
+        jobApplication.setJobName(job.getJobName());
+        jobApplication.setJobLocation(job.getWorkplace());
+        jobApplication.setJobSymptom(job.getSymptomType());
 
+        mDatabase.child("JobApplications").child(key).setValue(jobApplication);
+
+        //show job history after apply job
+        showJobHistory();
+
+    }
+
+    private void showJobHistory() {
         JobHistoryFragment jobHistoryFragment = new JobHistoryFragment();
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        transaction.remove(JobAnnouncement.this);
-        transaction.add(R.id.fragment_area, jobHistoryFragment);
+        transaction.replace(R.id.fragment_area, jobHistoryFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

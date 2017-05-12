@@ -10,13 +10,16 @@ import com.marktrs.macapp.Model.Job;
 import com.marktrs.macapp.R;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class MyPostedJobRecyclerViewAdapter extends RecyclerView.Adapter<MyPostedJobRecyclerViewAdapter.ViewHolder> {
 
     private ArrayList<Job> jobs;
+    private Map<String, Integer> jobApplicationCount;
 
-    public MyPostedJobRecyclerViewAdapter(ArrayList<Job> jobs) {
+    public MyPostedJobRecyclerViewAdapter(ArrayList<Job> jobs, Map<String, Integer> jobApplicationCount) {
         this.jobs = jobs;
+        this.jobApplicationCount = jobApplicationCount;
     }
 
     @Override
@@ -29,7 +32,13 @@ public class MyPostedJobRecyclerViewAdapter extends RecyclerView.Adapter<MyPoste
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mIdView.setText(jobs.get(position).getJobName());
-        holder.mContentView.setText(jobs.get(position).getOwnerUID());
+        holder.mContentView.setText(jobs.get(position).getWorkplace());
+        holder.jobSymptom.setText(jobs.get(position).getSymptomType());
+        if(null != jobApplicationCount.get(jobs.get(position).getJobId())){
+            holder.applicationCounter.setText(jobApplicationCount.get(jobs.get(position).getJobId()).toString());
+        }else {
+            holder.applicationCounter.setText("0");
+        }
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -48,12 +57,16 @@ public class MyPostedJobRecyclerViewAdapter extends RecyclerView.Adapter<MyPoste
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
+        public final TextView jobSymptom;
+        public final TextView applicationCounter;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.id);
             mContentView = (TextView) view.findViewById(R.id.content);
+            jobSymptom = (TextView) view.findViewById(R.id.job_symptom);
+            applicationCounter = (TextView) view.findViewById(R.id.application_count);
         }
 
         @Override

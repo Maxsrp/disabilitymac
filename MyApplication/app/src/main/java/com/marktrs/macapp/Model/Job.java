@@ -15,21 +15,22 @@ public class Job implements Serializable {
     private String workplace;
     private String payment;
     private String ownerUID;
+    private String jobId;
+
+
 
     public Job() {
 
     }
 
-    public Job(String jobName, String symptomType, String requiredEducation, String requiredSkill, String workplace, String payment, String ownerUID) {
-        this.jobName = jobName;
-        this.symptomType = symptomType;
-        this.requiredEducation = requiredEducation;
-        this.requiredSkill = requiredSkill;
-        this.workplace = workplace;
-        this.payment = payment;
-        this.ownerUID = ownerUID;
+
+    public String getJobId() {
+        return jobId;
     }
 
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
+    }
     public String getJobName() {
         return jobName;
     }
