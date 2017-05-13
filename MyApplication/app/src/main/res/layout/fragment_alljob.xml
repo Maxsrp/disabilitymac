@@ -14,8 +14,7 @@
         android:text="Job name"
         android:id="@+id/id"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAllCaps="true" />
+        android:layout_height="wrap_content"/>
     <View
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="160dp"

@@ -2,6 +2,7 @@ package com.marktrs.macapp.Fragment.Worker;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -47,7 +49,9 @@ public class AllJobFragment extends Fragment {
     private FirebaseUser mFirebaseUser;
 
     private ValueEventListener getAllJobListener;
-    private  RecyclerView recyclerView;
+    private RecyclerView recyclerView;
+
+    private TextView noContentText;
 
     public AllJobFragment() {
     }
@@ -98,17 +102,20 @@ public class AllJobFragment extends Fragment {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     jobs = new ArrayList<>();
-                    mListener = null;
                     for (DataSnapshot dtSnapshot : dataSnapshot.getChildren()) {
                         jobs.add(dtSnapshot.getValue(Job.class));
                     }
-                    if(jobs.isEmpty()){
-                        //TODO: show text 'No available job to show now'
-                        Log.d("Jobs", "Empty List");
-                    }else {
+                    if (jobs.isEmpty()) {
+                        if (jobs.isEmpty()){
+                            noContentText = (TextView) getActivity().findViewById(R.id.no_content);
+                            noContentText.setText("There are no job available yet");
+                            noContentText.setVisibility(View.VISIBLE);
+                        }
+                    } else {
                         recyclerView.setAdapter(new MyAllJobRecyclerViewAdapter(jobs, mListener));
                     }
                 }
+
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
@@ -120,6 +127,10 @@ public class AllJobFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
 
     @Override
     public void onAttach(Context context) {

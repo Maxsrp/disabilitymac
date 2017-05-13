@@ -17,14 +17,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:hint="Firstname" />
+        android:hint="Firstname"
+        android:inputType="text|textPersonName"
+        android:selectAllOnFocus="true"
+        android:singleLine="true" />
 
     <EditText
         android:id="@+id/lastName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:hint="Lastname" />
+        android:hint="Lastname"
+        android:inputType="textNoSuggestions|textShortMessage|textPersonName" />
 
 
     <TextView
@@ -39,18 +43,41 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="horizontal">
-
-            <Button
+            <ImageButton
+                android:background="@drawable/round_shape"
                 android:id="@+id/workerButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Worker" />
+                android:layout_marginRight="10dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_action_worker_button" />
 
-            <Button
+            <ImageButton
+                android:background="@drawable/round_shape"
                 android:id="@+id/recruiterButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Recruiter" />
+                android:layout_marginLeft="10dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_action_recruiter_button"/>
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_marginTop="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_marginRight="10dp"
+            android:textAlignment="center"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Worker"/>
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:textAlignment="center"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Recruiter"/>
     </LinearLayout>
 </LinearLayout>

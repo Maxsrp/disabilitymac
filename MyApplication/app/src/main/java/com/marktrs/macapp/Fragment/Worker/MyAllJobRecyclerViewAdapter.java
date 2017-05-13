@@ -1,7 +1,4 @@
 package com.marktrs.macapp.Fragment.Worker;
-
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +9,6 @@ import com.marktrs.macapp.Model.Job;
 import com.marktrs.macapp.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MyAllJobRecyclerViewAdapter extends RecyclerView.Adapter<MyAllJobRecyclerViewAdapter.ViewHolder> {
 
@@ -56,7 +52,6 @@ public class MyAllJobRecyclerViewAdapter extends RecyclerView.Adapter<MyAllJobRe
         public final TextView mIdView;
         public final TextView mContentView;
         public final TextView jobSymptom;
-
         public Job mItem;
 
         public ViewHolder(View view) {

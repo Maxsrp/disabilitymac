@@ -1,36 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:id="@+id/nav_job"
+            android:icon="@drawable/ic_action_home"
+            android:title="Jobs" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:id="@+id/nav_posted_job"
+            android:icon="@drawable/ic_action_home"
+            android:title="Posted jobs" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+            android:id="@+id/nav_history"
+            android:icon="@drawable/ic_action_job_history"
+            android:title="Job history" />
         <item
             android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:icon="@drawable/ic_action_setting"
+            android:title="Setting" />
     </group>
-
-    <item android:title="Communicate">
-        <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
-            <item
-                android:id="@+id/nav_sign_out"
-                android:icon="@drawable/ic_action_name"
-                android:title="Sign out" />
-        </menu>
-    </item>
-
+    <group>
+        <item
+            android:id="@+id/nav_sign_out"
+            android:icon="@drawable/ic_action_sign_out"
+            android:title="Sign out" />
+    </group>
 </menu>

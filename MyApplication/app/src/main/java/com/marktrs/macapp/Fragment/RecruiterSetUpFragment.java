@@ -72,11 +72,10 @@ public class RecruiterSetUpFragment extends Fragment {
                 PostedJobFragment postedJobFragment = new PostedJobFragment();
                 FragmentManager manager = getFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
-                transaction.remove(RecruiterSetUpFragment.this);
                 transaction.replace(R.id.fragment_area, postedJobFragment);
                 transaction.commit();
                 Toast.makeText(getContext(), "Successful !",
-                        Toast.LENGTH_SHORT).show();
+                        Toast.LENGTH_LONG).show();
             }
         });
     }

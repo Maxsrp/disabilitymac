@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,6 +35,8 @@ public class PostedJobFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 2;
 
+    private OnPostedFragmentInteractionListener mListener;
+
     private FirebaseDatabase database;
     private DatabaseReference jobsRef;
     private DatabaseReference jobApplicationRef;
@@ -47,6 +51,8 @@ public class PostedJobFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private Map<String, Integer> jobApplicationCount;
+    private TextView noContentText;
+    private ImageButton fab;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -135,10 +141,13 @@ public class PostedJobFragment extends Fragment {
                         }
                     }
                     if (jobs.isEmpty()) {
-                        //TODO: show text 'You haven't posted any job'
-                        Log.d("Jobs", "Empty List");
+                        if (jobs.isEmpty()){
+                            noContentText = (TextView) getActivity().findViewById(R.id.no_content);
+                            noContentText.setText("You never announce any job \n\n Try to tap (+) button to add new job");
+                            noContentText.setVisibility(View.VISIBLE);
+                        }
                     } else {
-                        recyclerView.setAdapter(new MyPostedJobRecyclerViewAdapter(jobs, jobApplicationCount));
+                        recyclerView.setAdapter(new MyPostedJobRecyclerViewAdapter(jobs, jobApplicationCount, mListener));
                     }
                 }
 
@@ -157,12 +166,22 @@ public class PostedJobFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        if (context instanceof OnPostedFragmentInteractionListener) {
+            mListener = (OnPostedFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnListFragmentInteractionListener");
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         jobsRef.removeEventListener(getAllJobListener);
+    }
+
+    public interface OnPostedFragmentInteractionListener{
+        void onPressPostedJob(Job job);
     }
 
 }

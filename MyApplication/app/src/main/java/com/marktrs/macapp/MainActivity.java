@@ -4,12 +4,15 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.view.menu.MenuView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,6 +23,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,7 +35,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.marktrs.macapp.Fragment.ProfileSetUpFragment;
 import com.marktrs.macapp.Fragment.Recruiter.AddNewJobFragment;
+import com.marktrs.macapp.Fragment.Recruiter.JobApplicationAchiveFragment;
 import com.marktrs.macapp.Fragment.Recruiter.PostedJobFragment;
+import com.marktrs.macapp.Fragment.Recruiter.dummy.DummyContent;
 import com.marktrs.macapp.Fragment.Worker.AllJobFragment;
 import com.marktrs.macapp.Fragment.Worker.JobAnnouncement;
 import com.marktrs.macapp.Fragment.Worker.JobHistoryFragment;
@@ -39,10 +45,16 @@ import com.marktrs.macapp.Model.Job;
 import com.marktrs.macapp.Model.JobApplication;
 import com.marktrs.macapp.Model.User;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, AllJobFragment.OnListFragmentInteractionListener, JobHistoryFragment.OnListFragmentInteractionListener {
+        implements
+        NavigationView.OnNavigationItemSelectedListener,
+        AllJobFragment.OnListFragmentInteractionListener,
+        JobHistoryFragment.OnListFragmentInteractionListener,
+        PostedJobFragment.OnPostedFragmentInteractionListener,
+        JobApplicationAchiveFragment.OnListFragmentInteractionListener{
 
     private static final String TAG = "MainActivity";
     private FirebaseAuth mFirebaseAuth;
@@ -51,12 +63,16 @@ public class MainActivity extends AppCompatActivity
 
     private DatabaseReference userRef;
     private ValueEventListener getUserProfile;
-    private ArrayList<User> userList;
+
+    private DatabaseReference applicationRef;
 
     private View mProgressView;
     private View mMainFragmentView;
 
     private ImageButton fab;
+    private NavigationView navigationView;
+    private TextView name;
+    private TextView noContentText;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -64,7 +80,7 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main);
 
-        mMainFragmentView = findViewById(R.id.fragment_area);
+        mMainFragmentView = findViewById(R.id.progress_bar_area);
         mProgressView = findViewById(R.id.main_progress);
 
         showProgress(true);
@@ -98,36 +114,37 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //userList = new ArrayList<>();
+        name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nameTextView);
+        TextView email = (TextView) navigationView.getHeaderView(0).findViewById(R.id.emailTextView);
+        noContentText = (TextView) findViewById(R.id.no_content);
+        email.setText(mFirebaseUser.getEmail());
 
         database = FirebaseDatabase.getInstance();
         userRef = database.getReference("User").child(mFirebaseUser.getUid());
-
         getUserProfile = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 if (dataSnapshot.getChildrenCount() > 0) {
                     User user = dataSnapshot.getValue(User.class);
                     if (user.getRecruiter() != null) {
+                        name.setText(user.getFirstName() + " " +user.getLastName() + " (Recruiter)");
                         UpdateUI("postedJob");
                     } else {
+                        name.setText(user.getFirstName() + " " +user.getLastName());
                         UpdateUI("jobList");
                     }
                 } else {
                     UpdateUI("setupProfile");
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         };
-
         userRef.addListenerForSingleValueEvent(getUserProfile);
     }
 
@@ -154,36 +171,45 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_manage) {
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_job) {
+            AllJobFragment allJobFragment = new AllJobFragment();
+            transaction.replace(R.id.fragment_area, allJobFragment);
+            transaction.commit();
+        } else if (id == R.id.nav_posted_job) {
+            PostedJobFragment postedJobFragment = new PostedJobFragment();
+            transaction.replace(R.id.fragment_area, postedJobFragment);
+            transaction.commit();
+        } else if (id == R.id.nav_history) {
+            JobHistoryFragment jobHistoryFragment = new JobHistoryFragment();
+            transaction.replace(R.id.fragment_area, jobHistoryFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
 
         } else if (id == R.id.nav_sign_out) {
             FirebaseAuth.getInstance().signOut();
@@ -197,24 +223,25 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void UpdateUI(String route) {
-
-
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
 
         if (route.equals("setupProfile")) {
             User user = new User();
             user.setuID(mFirebaseUser.getUid());
-
             ProfileSetUpFragment profileSetUpFragment = new ProfileSetUpFragment().newInstance(user);
             transaction.replace(R.id.fragment_area, profileSetUpFragment);
 
         } else if (route.equals("postedJob")) {
+            navigationView.getMenu().getItem(2).setVisible(false);
+            navigationView.getMenu().getItem(0).setVisible(false);
+
             PostedJobFragment postedJobFragment = new PostedJobFragment();
             transaction.replace(R.id.fragment_area, postedJobFragment);
 
             fab = (ImageButton) findViewById(R.id.fab);
             fab.setImageResource(R.drawable.ic_action_add);
+
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -226,6 +253,7 @@ public class MainActivity extends AppCompatActivity
                     transaction.replace(R.id.fragment_area, addNewJobFragment);
                     transaction.addToBackStack(null);
                     transaction.commit();
+                    noContentText.setVisibility(View.GONE);
                     fab.setVisibility(View.INVISIBLE);
                     //TODO: show fab after finish added new job
                 }
@@ -233,6 +261,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (route.equals("jobList")) {
             AllJobFragment allJobFragment = new AllJobFragment();
+            navigationView.getMenu().getItem(1).setVisible(false);
             transaction.replace(R.id.fragment_area, allJobFragment);
         }
         transaction.commit();
@@ -289,10 +318,24 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onListFragmentClick(JobApplication item) {
-        Toast.makeText(MainActivity.this, "Item " + item.getId() + " click",
-                Toast.LENGTH_SHORT).show();
+        //TODO: remove or cancel this application
+    }
 
+    @Override
+    public void onPressPostedJob(final Job job) {
+        //TODO: send all application relate to this job to newInstance
+        JobApplicationAchiveFragment allAppFragment = new JobApplicationAchiveFragment().newInstance(job);
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.replace(R.id.fragment_area, allAppFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
 
     }
 
+    @Override
+    public void onListFragmentInteraction(JobApplication item) {
+        applicationRef = database.getReference().child("JobApplications").child(item.getId());
+        applicationRef.setValue(item);
+    }
 }

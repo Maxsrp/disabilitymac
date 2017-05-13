@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.marktrs.macapp.Fragment.Worker.AllJobFragment;
 import com.marktrs.macapp.LoginActivity;
 import com.marktrs.macapp.Model.User;
 import com.marktrs.macapp.Model.Worker;
@@ -31,6 +32,9 @@ public class WorkerSetUpFragment extends Fragment {
     private EditText symptomET;
     private EditText educationET;
     private EditText skillET;
+    private EditText locationET;
+    private EditText lineId;
+    private EditText facebookId;
 
     public User user;
 
@@ -66,26 +70,33 @@ public class WorkerSetUpFragment extends Fragment {
         symptomET = (EditText) view.findViewById(R.id.symptom);
         educationET = (EditText) view.findViewById(R.id.education);
         skillET = (EditText) view.findViewById(R.id.skill);
+        locationET = (EditText) view.findViewById(R.id.location);
+        lineId = (EditText) view.findViewById(R.id.worker_line_id);
+        facebookId = (EditText) view.findViewById(R.id.worker_facebook_id);
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addProfileToFirebase();
+                AllJobFragment allJobFragment = new AllJobFragment();
                 FragmentManager manager = getFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
-                transaction.remove(WorkerSetUpFragment.this);
+                transaction.replace(R.id.fragment_area, allJobFragment);
                 transaction.commit();
                 Toast.makeText(getContext(), "Successful !",
-                        Toast.LENGTH_SHORT).show();
+                        Toast.LENGTH_LONG).show();
             }
         });
     }
 
     public void addProfileToFirebase() {
-        Worker workerProfile = new Worker(
-                symptomET.getText().toString()
-                , educationET.getText().toString()
-                , skillET.getText().toString());
+        Worker workerProfile = new Worker();
+        workerProfile.setSymptom(symptomET.getText().toString());
+        workerProfile.setEducaton(educationET.getText().toString());
+        workerProfile.setSkill(skillET.getText().toString());
+        workerProfile.setLocation(locationET.getText().toString());
+        workerProfile.setLineId(lineId.getText().toString());
+        workerProfile.setFacebookId(facebookId.getText().toString());
         this.user.setWorker(workerProfile);
         mDatabase.child("User").child(user.getuID()).setValue(this.user);
     }

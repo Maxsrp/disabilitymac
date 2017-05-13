@@ -9,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -43,6 +45,8 @@ public class JobHistoryFragment extends Fragment {
     private ArrayList<JobApplication> appliedJob;
     private ValueEventListener getAppliedJobListener;
     private RecyclerView recyclerView;
+    private TextView noContentText;
+    private ImageButton fab;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -78,6 +82,10 @@ public class JobHistoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_jobhistory_list, container, false);
         // Set the adapter
+
+        fab = (ImageButton) getActivity().findViewById(R.id.fab);
+        fab.setVisibility(View.GONE);
+
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             recyclerView = (RecyclerView) view;
@@ -94,11 +102,17 @@ public class JobHistoryFragment extends Fragment {
             getAppliedJobListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    appliedJob = new ArrayList<>();
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         JobApplication application = snapshot.getValue(JobApplication.class);
                         if (application.getWorkerId().equals(mFirebaseUser.getUid())){
                             appliedJob.add(application);
                         }
+                    }
+                    if (appliedJob.isEmpty()){
+                        noContentText = (TextView) getActivity().findViewById(R.id.no_content);
+                        noContentText.setText("You never apply any job\n\ntry to apply some job");
+                        noContentText.setVisibility(View.VISIBLE);
                     }
                     recyclerView.setAdapter(new MyJobHistoryRecyclerViewAdapter(appliedJob, mListener));
                 }

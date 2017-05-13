@@ -10,6 +10,13 @@
     android:id="@+id/fragment_area"
     android:paddingTop="18dp">
 
-
+    <TextView
+        android:id="@+id/no_content"
+        android:textAlignment="center"
+        android:layout_margin="18dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nothing to show here"
+        android:visibility="gone"/>
 
 </android.support.constraint.ConstraintLayout>

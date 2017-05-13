@@ -13,7 +13,6 @@ public class JobApplication {
     private String jobName;
     private String jobLocation;
     private String jobSymptom;
-    private String jobKey;
 
     public JobApplication() {
     }
@@ -80,13 +79,5 @@ public class JobApplication {
 
     public void setJobSymptom(String jobSymptom) {
         this.jobSymptom = jobSymptom;
-    }
-
-    public String getJobKey() {
-        return jobKey;
-    }
-
-    public void setJobKey(String jobKey) {
-        this.jobKey = jobKey;
     }
 }

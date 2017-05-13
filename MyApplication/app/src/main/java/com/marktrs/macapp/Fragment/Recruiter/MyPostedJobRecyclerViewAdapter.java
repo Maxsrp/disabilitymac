@@ -16,10 +16,12 @@ public class MyPostedJobRecyclerViewAdapter extends RecyclerView.Adapter<MyPoste
 
     private ArrayList<Job> jobs;
     private Map<String, Integer> jobApplicationCount;
+    private PostedJobFragment.OnPostedFragmentInteractionListener mListener;
 
-    public MyPostedJobRecyclerViewAdapter(ArrayList<Job> jobs, Map<String, Integer> jobApplicationCount) {
+    public MyPostedJobRecyclerViewAdapter(ArrayList<Job> jobs, Map<String, Integer> jobApplicationCount, PostedJobFragment.OnPostedFragmentInteractionListener listener) {
         this.jobs = jobs;
         this.jobApplicationCount = jobApplicationCount;
+        this.mListener = listener;
     }
 
     @Override
@@ -31,6 +33,7 @@ public class MyPostedJobRecyclerViewAdapter extends RecyclerView.Adapter<MyPoste
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        holder.mItem = jobs.get(position);
         holder.mIdView.setText(jobs.get(position).getJobName());
         holder.mContentView.setText(jobs.get(position).getWorkplace());
         holder.jobSymptom.setText(jobs.get(position).getSymptomType());
@@ -42,8 +45,10 @@ public class MyPostedJobRecyclerViewAdapter extends RecyclerView.Adapter<MyPoste
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Click",
-                        Toast.LENGTH_SHORT).show();
+                if (null != mListener) {
+                    mListener.onPressPostedJob(holder.mItem);
+                }
+
             }
         });
     }
@@ -59,6 +64,7 @@ public class MyPostedJobRecyclerViewAdapter extends RecyclerView.Adapter<MyPoste
         public final TextView mContentView;
         public final TextView jobSymptom;
         public final TextView applicationCounter;
+        public Job mItem;
 
         public ViewHolder(View view) {
             super(view);

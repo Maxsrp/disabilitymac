@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +47,8 @@ public class JobAnnouncement extends Fragment {
     private DatabaseReference mDatabase;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
+
+    private ImageButton fab;
 
     public static JobAnnouncement newInstance(Job job) {
 
@@ -104,6 +107,7 @@ public class JobAnnouncement extends Fragment {
     }
 
     private void applyJob() {
+
         String key = mDatabase.child("JobApplications").push().getKey();
 
         JobApplication jobApplication = new JobApplication();
@@ -130,5 +134,12 @@ public class JobAnnouncement extends Fragment {
         transaction.replace(R.id.fragment_area, jobHistoryFragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        fab = (ImageButton) getActivity().findViewById(R.id.fab);
+        fab.setVisibility(View.VISIBLE);
     }
 }

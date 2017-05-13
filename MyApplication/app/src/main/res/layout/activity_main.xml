@@ -10,9 +10,11 @@
 
     <ProgressBar
         android:id="@+id/main_progress"
-        style="?android:attr/progressBarStyleLarge"
+        style="?android:attr/progressBarStyleLargeInverse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxHeight="15dp"
+        android:maxWidth="15dp"
         android:layout_marginBottom="8dp"
         android:visibility="gone" />
 
@@ -29,5 +31,4 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer" />
-
 </android.support.v4.widget.DrawerLayout>

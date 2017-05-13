@@ -17,8 +17,6 @@ public class Job implements Serializable {
     private String ownerUID;
     private String jobId;
 
-
-
     public Job() {
 
     }

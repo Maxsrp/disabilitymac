@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,6 +39,8 @@ public class AddNewJobFragment extends Fragment {
     private DatabaseReference mDatabase;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
+
+    private ImageButton fab;
 
     public AddNewJobFragment() {
         // Required empty public constructor
@@ -95,5 +98,12 @@ public class AddNewJobFragment extends Fragment {
         job.setOwnerUID(mFirebaseUser.getUid());
 
         mDatabase.child("Jobs").child(key).setValue(job);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        fab = (ImageButton) getActivity().findViewById(R.id.fab);
+        fab.setVisibility(View.VISIBLE);
     }
 }

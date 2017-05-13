@@ -19,6 +19,12 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
     </android.support.design.widget.AppBarLayout>
 
+    <View
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:id="@+id/progress_bar_area">
+    </View>
+
     <include layout="@layout/content_main" />
 
     <android.support.design.widget.FloatingActionButton

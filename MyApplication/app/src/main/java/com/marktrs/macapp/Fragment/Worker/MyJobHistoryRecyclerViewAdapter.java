@@ -1,5 +1,6 @@
 package com.marktrs.macapp.Fragment.Worker;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,10 @@ public class MyJobHistoryRecyclerViewAdapter extends RecyclerView.Adapter<MyJobH
 
     private final ArrayList<JobApplication> mValues;
     private final OnListFragmentInteractionListener mListener;
+
+    private final String ACCEPTED = "Accepted";
+    private final String DENIED = "Denied";
+    private final String WAITING = "waiting";
 
     public MyJobHistoryRecyclerViewAdapter(ArrayList<JobApplication> items, OnListFragmentInteractionListener listener) {
         mValues = items;
@@ -36,8 +41,13 @@ public class MyJobHistoryRecyclerViewAdapter extends RecyclerView.Adapter<MyJobH
         holder.jobName.setText(mValues.get(position).getJobName());
         holder.jobLocation.setText(mValues.get(position).getJobLocation());
         holder.applicationStatus.setText(mValues.get(position).getStatus());
-        holder.jobSymptom.setText(mValues.get(position).getJobSymptom());
-
+        if (mValues.get(position).getStatus().equals(WAITING)){
+            holder.applicationStatus.setTextColor(Color.parseColor("#FFC107"));
+        }else if (mValues.get(position).getStatus().equals(ACCEPTED)){
+            holder.applicationStatus.setTextColor(Color.parseColor("#4caf50"));
+        }else {
+            holder.applicationStatus.setTextColor(Color.parseColor("#E91E63"));
+        }
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,7 +67,6 @@ public class MyJobHistoryRecyclerViewAdapter extends RecyclerView.Adapter<MyJobH
         public final View mView;
         public final TextView jobName;
         public final TextView jobLocation;
-        public final TextView jobSymptom;
         public final TextView applicationStatus;
         public JobApplication mItem;
 
@@ -66,7 +75,6 @@ public class MyJobHistoryRecyclerViewAdapter extends RecyclerView.Adapter<MyJobH
             mView = view;
             jobName = (TextView) view.findViewById(R.id.job_name);
             jobLocation = (TextView) view.findViewById(R.id.job_location);
-            jobSymptom = (TextView) view.findViewById(R.id.job_symptom);
             applicationStatus = (TextView) view.findViewById(R.id.application_status);
         }
     }

@@ -9,6 +9,9 @@ public class Worker {
     private String symptom;
     private String educaton;
     private String skill;
+    private String location;
+    private String lineId;
+    private String facebookId;
 
     public Worker() {
 
@@ -42,5 +45,29 @@ public class Worker {
 
     public void setSkill(String skill) {
         this.skill = skill;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getLineId() {
+        return lineId;
+    }
+
+    public void setLineId(String lineId) {
+        this.lineId = lineId;
+    }
+
+    public String getFacebookId() {
+        return facebookId;
+    }
+
+    public void setFacebookId(String facebookId) {
+        this.facebookId = facebookId;
     }
 }

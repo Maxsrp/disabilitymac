@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.marktrs.macapp.MainActivity;
@@ -28,8 +29,8 @@ import com.marktrs.macapp.R;
 public class ProfileSetUpFragment extends Fragment {
 
     private static final String USER_KEY = "User_key";
-    private Button workerButton;
-    private Button recruiterButton;
+    private ImageButton workerButton;
+    private ImageButton recruiterButton;
 
     private EditText firstName;
     private EditText lastName;
@@ -65,8 +66,8 @@ public class ProfileSetUpFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        workerButton = (Button) view.findViewById(R.id.workerButton);
-        recruiterButton = (Button) view.findViewById(R.id.recruiterButton);
+        workerButton = (ImageButton) view.findViewById(R.id.workerButton);
+        recruiterButton = (ImageButton) view.findViewById(R.id.recruiterButton);
         firstName = (EditText) view.findViewById(R.id.firstName);
         lastName = (EditText) view.findViewById(R.id.lastName);
 

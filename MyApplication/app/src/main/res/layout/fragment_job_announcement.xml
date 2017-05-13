@@ -17,11 +17,10 @@
             android:text="Job name"
             android:id="@+id/job_name"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAllCaps="true" />
+            android:layout_height="wrap_content"/>
 
         <TextView
-            android:layout_marginTop="140dp"
+            android:layout_marginTop="130dp"
             android:textAlignment="textEnd"
             android:layout_marginRight="15dp"
             android:text="Job location"
@@ -55,41 +54,83 @@
             android:padding="15dp"
             android:orientation="vertical">
 
-            <TextView
-                android:text="education"
-                android:id="@+id/job_education"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="16dp"/>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Payment"
+                    android:textStyle="bold"
+                    android:id="@+id/text1"/>
+                <TextView
+                    android:textAlignment="textEnd"
+                    android:id="@+id/job_payment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/text1"
+                    android:layout_alignParentRight="true"
+                    android:layout_toStartOf="@+id/text1"
+                    android:text="-"/>
+            </RelativeLayout>
 
-            <TextView
-                android:text="skill"
-                android:id="@+id/job_skill"
-                android:layout_width="match_parent"
+            <RelativeLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="16dp"/>
+                android:layout_marginTop="8dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Required skill"
+                    android:textStyle="bold"
+                    android:id="@+id/text2"/>
+                <TextView
+                    android:id="@+id/job_skill"
+                    android:textAlignment="textEnd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/text2"
+                    android:layout_alignParentRight="true"
+                    android:layout_toStartOf="@+id/text2"
+                    android:text="-"/>
+            </RelativeLayout>
 
-            <TextView
-                android:text="payment"
-                android:id="@+id/job_payment"
-                android:layout_width="match_parent"
+            <RelativeLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="16dp"/>
-
+                android:layout_marginTop="8dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Required education"
+                    android:textStyle="bold"
+                    android:id="@+id/text3"/>
+                <TextView
+                    android:id="@+id/job_education"
+                    android:textAlignment="textEnd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/text3"
+                    android:layout_alignParentRight="true"
+                    android:layout_toStartOf="@+id/text3"
+                    android:text="-"/>
+            </RelativeLayout>
 
             <View
-                android:layout_marginBottom="15dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/colorAccent"/>
 
             <Button
+                android:id="@+id/apply_job"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/apply_job"
-                android:text="Apply this job"
                 android:background="@color/colorAccent"
-                android:textColor="#FAFAFA"/>
+                android:text="Apply this job"
+                android:textColor="#FAFAFA" />
 
         </LinearLayout>
     </RelativeLayout>
