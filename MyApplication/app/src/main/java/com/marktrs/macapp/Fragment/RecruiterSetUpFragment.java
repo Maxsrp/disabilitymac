@@ -1,8 +1,12 @@
 package com.marktrs.macapp.Fragment;
 
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -16,10 +20,12 @@ import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.marktrs.macapp.Fragment.Recruiter.PostedJobFragment;
+import com.marktrs.macapp.MainActivity;
 import com.marktrs.macapp.Model.Recruiter;
 import com.marktrs.macapp.Model.User;
 import com.marktrs.macapp.Model.Worker;
 import com.marktrs.macapp.R;
+import com.marktrs.macapp.SignUpActivity;
 
 
 /**
@@ -69,13 +75,14 @@ public class RecruiterSetUpFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 addProfileToFirebase();
+                Toast.makeText(getContext(), "Successful !",
+                        Toast.LENGTH_LONG).show();
+                ((MainActivity)getActivity()).setRecruiterNavSideBar();
                 PostedJobFragment postedJobFragment = new PostedJobFragment();
                 FragmentManager manager = getFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.replace(R.id.fragment_area, postedJobFragment);
                 transaction.commit();
-                Toast.makeText(getContext(), "Successful !",
-                        Toast.LENGTH_LONG).show();
             }
         });
     }

@@ -38,6 +38,7 @@ import com.marktrs.macapp.Fragment.Recruiter.AddNewJobFragment;
 import com.marktrs.macapp.Fragment.Recruiter.JobApplicationAchiveFragment;
 import com.marktrs.macapp.Fragment.Recruiter.PostedJobFragment;
 import com.marktrs.macapp.Fragment.Recruiter.dummy.DummyContent;
+import com.marktrs.macapp.Fragment.RecruiterSetUpFragment;
 import com.marktrs.macapp.Fragment.Worker.AllJobFragment;
 import com.marktrs.macapp.Fragment.Worker.JobAnnouncement;
 import com.marktrs.macapp.Fragment.Worker.JobHistoryFragment;
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity
     private View mProgressView;
     private View mMainFragmentView;
 
-    private ImageButton fab;
+    private FloatingActionButton fab;
     private NavigationView navigationView;
     private TextView name;
     private TextView noContentText;
@@ -99,7 +100,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -124,6 +125,7 @@ public class MainActivity extends AppCompatActivity
 
         database = FirebaseDatabase.getInstance();
         userRef = database.getReference("User").child(mFirebaseUser.getUid());
+
         getUserProfile = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -229,39 +231,24 @@ public class MainActivity extends AppCompatActivity
         if (route.equals("setupProfile")) {
             User user = new User();
             user.setuID(mFirebaseUser.getUid());
+            fab.setVisibility(View.GONE);
+            navigationView.getMenu().getItem(0).setVisible(false);
+            navigationView.getMenu().getItem(1).setVisible(false);
+            navigationView.getMenu().getItem(2).setVisible(false);
+            navigationView.getMenu().getItem(3).setVisible(false);
             ProfileSetUpFragment profileSetUpFragment = new ProfileSetUpFragment().newInstance(user);
             transaction.replace(R.id.fragment_area, profileSetUpFragment);
 
         } else if (route.equals("postedJob")) {
             navigationView.getMenu().getItem(2).setVisible(false);
             navigationView.getMenu().getItem(0).setVisible(false);
-
+            setRecruiterNavSideBar();
             PostedJobFragment postedJobFragment = new PostedJobFragment();
             transaction.replace(R.id.fragment_area, postedJobFragment);
 
-            fab = (ImageButton) findViewById(R.id.fab);
-            fab.setImageResource(R.drawable.ic_action_add);
-
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(MainActivity.this, "Adding new job",
-                            Toast.LENGTH_SHORT).show();
-                    AddNewJobFragment addNewJobFragment = new AddNewJobFragment();
-                    FragmentManager manager = getSupportFragmentManager();
-                    FragmentTransaction transaction = manager.beginTransaction();
-                    transaction.replace(R.id.fragment_area, addNewJobFragment);
-                    transaction.addToBackStack(null);
-                    transaction.commit();
-                    noContentText.setVisibility(View.GONE);
-                    fab.setVisibility(View.INVISIBLE);
-                    //TODO: show fab after finish added new job
-                }
-            });
-
         } else if (route.equals("jobList")) {
-            AllJobFragment allJobFragment = new AllJobFragment();
             navigationView.getMenu().getItem(1).setVisible(false);
+            AllJobFragment allJobFragment = new AllJobFragment();
             transaction.replace(R.id.fragment_area, allJobFragment);
         }
         transaction.commit();
@@ -337,5 +324,34 @@ public class MainActivity extends AppCompatActivity
     public void onListFragmentInteraction(JobApplication item) {
         applicationRef = database.getReference().child("JobApplications").child(item.getId());
         applicationRef.setValue(item);
+    }
+
+    public void setRecruiterNavSideBar() {
+        navigationView.getMenu().getItem(1).setVisible(true);
+        navigationView.getMenu().getItem(3).setVisible(true);
+        fab.setVisibility(View.VISIBLE);
+        fab.setImageResource(R.drawable.ic_action_add);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, "Adding new job",
+                        Toast.LENGTH_SHORT).show();
+                AddNewJobFragment addNewJobFragment = new AddNewJobFragment();
+                FragmentManager manager = getSupportFragmentManager();
+                FragmentTransaction transaction = manager.beginTransaction();
+                transaction.replace(R.id.fragment_area, addNewJobFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+                noContentText.setVisibility(View.GONE);
+                fab.setVisibility(View.INVISIBLE);
+            }
+        });
+    }
+
+    public void setWorkerNavSideBar(){
+        navigationView.getMenu().getItem(2).setVisible(true);
+        navigationView.getMenu().getItem(0).setVisible(true);
+        navigationView.getMenu().getItem(3).setVisible(true);
+        fab.setVisibility(View.VISIBLE);
     }
 }

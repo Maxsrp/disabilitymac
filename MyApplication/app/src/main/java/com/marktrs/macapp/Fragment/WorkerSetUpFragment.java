@@ -17,6 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.marktrs.macapp.Fragment.Worker.AllJobFragment;
 import com.marktrs.macapp.LoginActivity;
+import com.marktrs.macapp.MainActivity;
 import com.marktrs.macapp.Model.User;
 import com.marktrs.macapp.Model.Worker;
 import com.marktrs.macapp.R;
@@ -78,13 +79,14 @@ public class WorkerSetUpFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 addProfileToFirebase();
+                Toast.makeText(getContext(), "Successful !",
+                        Toast.LENGTH_LONG).show();
+                ((MainActivity)getActivity()).setWorkerNavSideBar();
                 AllJobFragment allJobFragment = new AllJobFragment();
                 FragmentManager manager = getFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.replace(R.id.fragment_area, allJobFragment);
                 transaction.commit();
-                Toast.makeText(getContext(), "Successful !",
-                        Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -99,5 +101,11 @@ public class WorkerSetUpFragment extends Fragment {
         workerProfile.setFacebookId(facebookId.getText().toString());
         this.user.setWorker(workerProfile);
         mDatabase.child("User").child(user.getuID()).setValue(this.user);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
     }
 }
